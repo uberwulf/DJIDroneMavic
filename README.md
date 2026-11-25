@@ -37,7 +37,7 @@ More in [docs/mockups](docs/mockups).
 
 ## Roof scan missions
 
-Plan on a computer with the **Air Pilot Planner** (https://uberwulf-hub.github.io/DJIDroneMavic/),
+Plan on a computer with the **Air Pilot Planner** (https://uberwulf.github.io/DJIDroneMavic/),
 which you can install as an app from Edge or Chrome.
 
 - **Roof face sweep:** click the two ends of a roof's lower edge; the drone flies side to side in rows,
@@ -66,7 +66,7 @@ When the run finishes, download **AirPilot-debug-apk** from the bottom of the ru
 ## Installing on the phone
 
 **Phone download link (always the newest build):**
-https://github.com/uberwulf-hub/DJIDroneMavic/releases/latest/download/AirPilot.apk
+https://github.com/uberwulf/DJIDroneMavic/releases/latest/download/AirPilot.apk
 
 1. Open that link in Chrome on the phone, then open the downloaded `AirPilot.apk` and allow installing if asked.
 2. The phone needs internet the first time the app opens, so it can register with DJI.

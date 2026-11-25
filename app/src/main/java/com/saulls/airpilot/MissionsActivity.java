@@ -35,7 +35,7 @@ public class MissionsActivity extends Activity {
     public static final String EXTRA_SHOW = "show";
     private static final int RC_IMPORT = 42;
     private static final int RC_DRIVE_READ = 43;
-    public static final String PLANNER_URL = "https://uberwulf-hub.github.io/DJIDroneMavic/";
+    public static final String PLANNER_URL = "https://uberwulf.github.io/DJIDroneMavic/";
 
     private LinearLayout list;
     private MapView map;

@@ -341,7 +341,7 @@
   <ol class="help" style="padding-left:18px">
     <li>Open <b>console.cloud.google.com</b> → project <b>Air Pilot</b> → <b>Google Auth Platform → Clients → Create client</b>.</li>
     <li>Application type: <b>Web application</b>. Name: <b>Air Pilot Planner</b>.</li>
-    <li>Under <b>Authorized JavaScript origins</b> add <code>https://uberwulf-hub.github.io</code> (no slash at the end). Leave redirect URIs empty.</li>
+    <li>Under <b>Authorized JavaScript origins</b> add <code>https://uberwulf.github.io</code> (no slash at the end). Leave redirect URIs empty.</li>
     <li>Click <b>Create</b> and copy the <b>Client ID</b> (ends in <code>.apps.googleusercontent.com</code>).</li>
   </ol>
   <input id="gclient" type="text" placeholder="Paste the Client ID here" style="width:100%">
@@ -365,7 +365,7 @@
 (function () {
   'use strict';
   var FT = 0.3048;
-  var OPEN_URL = 'https://uberwulf-hub.github.io/DJIDroneMavic/m.html';
+  var OPEN_URL = 'https://uberwulf.github.io/DJIDroneMavic/m.html';
   var $ = function (id) { return document.getElementById(id); };
 
   // No double-click zoom: double clicks would drop points. Zoom with the wheel or the +/− buttons.
