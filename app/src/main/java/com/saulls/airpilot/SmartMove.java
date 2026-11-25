@@ -174,6 +174,7 @@ public final class SmartMove {
             centerN = p.radiusM * Math.cos(yawRad);
         }
         lastAngle = Double.NaN;
+        followBearing = Double.NaN;
         swept = 0;
         directionChecked = false;
 
@@ -328,6 +329,8 @@ public final class SmartMove {
         progress(prog, "Dronie · " + Math.round(prog * 100) + "%");
     }
 
+    private double followBearing = Double.NaN;
+
     /** Keep a leash distance from the pilot, facing them, at a set height. */
     private void followTick(Telemetry.Snapshot s, double e, double n, android.location.Location me) {
         double dE = smoothE - e, dN = smoothN - n;
@@ -337,6 +340,12 @@ public final class SmartMove {
             return;
         }
         double bearing = Math.toDegrees(Math.atan2(dE, dN));
+        // Close up, a few feet of GPS error swings the direction to you a lot: hold the last heading
+        // when nearly on top of you, and blend gently otherwise.
+        if (dist < 3 && !Double.isNaN(followBearing)) bearing = followBearing;
+        else if (!Double.isNaN(followBearing) && dist < params.leashM + 4)
+            bearing = wrap(followBearing + 0.35 * wrap(bearing - followBearing));
+        followBearing = bearing;
         double forward = 0.9 * (dist - params.leashM);
         if (me.hasSpeed() && me.hasBearing() && me.getSpeed() > 0.7) {
             // Feed-forward the pilot's own speed along the line between us.

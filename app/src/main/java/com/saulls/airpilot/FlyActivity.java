@@ -660,13 +660,12 @@ public class FlyActivity extends Activity implements Telemetry.Listener, SmartMo
     /** Follow me / Orbit me setup, using the phone's GPS as "you". */
     private void showMeMoveDialog(boolean follow) {
         boolean imp = imperial;
-        final double[] sizes = follow ? new double[]{8, 12, 20} : new double[]{5, 8, 12};
+        // Follow has a "Close" option (15 ft behind) that only flies 33 ft or higher, so GPS wander can't bring it near you.
+        final double[] sizes = follow ? new double[]{4.5, 8, 12, 20} : new double[]{5, 8, 12};
         final double[] heights = {6, 10, 15};
-        String[] sizeNames = new String[3], heightNames = new String[3];
-        for (int i = 0; i < 3; i++) {
-            sizeNames[i] = Units.distance(sizes[i], imp);
-            heightNames[i] = Units.distance(heights[i], imp);
-        }
+        String[] sizeNames = new String[sizes.length], heightNames = new String[3];
+        for (int i = 0; i < sizes.length; i++) sizeNames[i] = Units.distance(sizes[i], imp) + (follow && i == 0 ? " close" : "");
+        for (int i = 0; i < 3; i++) heightNames[i] = Units.distance(heights[i], imp);
         android.widget.LinearLayout box = new android.widget.LinearLayout(this);
         box.setOrientation(android.widget.LinearLayout.VERTICAL);
         int pad = DensityUtil.dip2px(this, 20);
@@ -686,6 +685,12 @@ public class FlyActivity extends Activity implements Telemetry.Listener, SmartMo
         l1.setTextColor(Ui.ACCENT);
         box.addView(l1);
         android.widget.RadioGroup size = radioRow(sizeNames, 1);
+        TextView closeNote = new TextView(this);
+        closeNote.setTextColor(Ui.WARN);
+        closeNote.setTextSize(13);
+        closeNote.setText("Close: flies at least " + Units.distance(10, imp) + " high, since phone GPS can be off by 10\u201315 ft. "
+                + "Open areas only.");
+        closeNote.setVisibility(View.GONE);
         box.addView(size);
         android.widget.RadioGroup height = null;
         if (follow) {
@@ -695,6 +700,16 @@ public class FlyActivity extends Activity implements Telemetry.Listener, SmartMo
             box.addView(l2);
             height = radioRow(heightNames, 1);
             box.addView(height);
+            box.addView(closeNote);
+            final android.widget.RadioGroup hg = height;
+            size.setOnCheckedChangeListener((g, id) -> {
+                boolean close = g.indexOfChild(g.findViewById(id)) == 0;
+                closeNote.setVisibility(close ? View.VISIBLE : View.GONE);
+                View low = hg.getChildAt(0);
+                low.setEnabled(!close);
+                if (close && hg.indexOfChild(hg.findViewById(hg.getCheckedRadioButtonId())) == 0)
+                    ((android.widget.RadioButton) hg.getChildAt(1)).setChecked(true);
+            });
         }
         android.widget.CheckBox record = new android.widget.CheckBox(this);
         record.setText("Record video");
@@ -716,6 +731,7 @@ public class FlyActivity extends Activity implements Telemetry.Listener, SmartMo
                         int hi = heightGroup.indexOfChild(heightGroup.findViewById(heightGroup.getCheckedRadioButtonId()));
                         p.heightM = heights[Math.max(0, hi)];
                     }
+                    if (follow && p.leashM < 6) p.heightM = Math.max(p.heightM, 10); // close follow stays high
                     p.speedMps = 2.5;
                     p.continuous = true;
                     p.clockwise = true;
